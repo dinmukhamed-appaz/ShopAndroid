@@ -55,6 +55,7 @@ import com.example.shopapp.ui.theme.ShopAppTheme
 import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.clickable
 
 @Preview(showBackground = true)
 @Composable
@@ -64,7 +65,10 @@ private fun MainMenuScreenPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenuScreen(products: List<Product> = ProductRepository.getProducts()) {
+fun MainMenuScreen(
+    products: List<Product> = ProductRepository.getProducts(),
+    onProductClick: (Product) -> Unit = {}
+) {
     val gridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
 
@@ -139,7 +143,14 @@ fun MainMenuScreen(products: List<Product> = ProductRepository.getProducts()) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text("Popular", style = MaterialTheme.typography.titleLarge)
             }
-            items(products) { ProductCard(it) }
+            items(products) { product ->
+                ProductCard(
+                    product = product,
+                    onClick = {
+                        onProductClick(product)
+                    }
+                )
+            }
         }
     }
 }
@@ -241,7 +252,11 @@ fun PromoBanner(
 }
 
 @Composable
-fun ProductCard(product: Product, modifier: Modifier = Modifier) {
+fun ProductCard(
+    product: Product,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
     Column(modifier = modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = product.imageRes),
@@ -250,6 +265,7 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .aspectRatio(2f / 3f)
                 .clip(MaterialTheme.shapes.extraSmall)
+                .clickable(onClick = onClick)
                 .background(
                     Brush.verticalGradient(
                         listOf(MaterialTheme.extra.imageTop, MaterialTheme.extra.imageBottom)
