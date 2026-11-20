@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
@@ -41,105 +40,110 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.shopapp.R
 import com.example.shopapp.model.Product
-import com.example.shopapp.ui.theme.Typography
+import com.example.shopapp.ui.theme.Paper
+import com.example.shopapp.ui.theme.ShopAppTheme
+import com.example.shopapp.ui.theme.extra
+import com.example.shopapp.ui.theme.spacing
+
+private val sampleProducts = listOf(
+    Product("T-Shirt Tomorrow", "$12.00", "4.8", R.drawable.one),
+    Product("Hoodie STWD", "$15.00", "4.7", R.drawable.two),
+    Product("T-Shirt Tomorrow", "$12.00", "4.8", R.drawable.one),
+    Product("Hoodie STWD", "$15.00", "4.7", R.drawable.two),
+)
+
+@Preview(showBackground = true)
+@Composable
+private fun MainMenuScreenPreview() {
+    ShopAppTheme { MainMenuScreen() }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showBackground = true)
-fun MainMenuScreen() {
-    MaterialTheme(typography = Typography) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth().padding(end = 12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("Wearify", fontWeight = FontWeight.Bold)
-                            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                IconButton(
-                                    onClick = {},
-                                    colors = IconButtonDefaults.iconButtonColors(
-                                        containerColor = Color.White,
-                                        contentColor = Color.DarkGray
-                                    )
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.search),
-                                        contentDescription = "Search",
-                                        modifier = Modifier.size(17.dp)
-                                    )
-                                }
+fun MainMenuScreen(products: List<Product> = sampleProducts) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = MaterialTheme.spacing.m),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Wearify", style = MaterialTheme.typography.titleLarge)
 
-                                IconButton(
-                                    onClick = {},
-                                    colors = IconButtonDefaults.iconButtonColors(
-                                        containerColor = Color(232, 234, 235),
-                                        contentColor = Color.DarkGray
-                                    )
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.shopping_bag),
-                                        contentDescription = "Cart",
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                }
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            IconButton(
+                                onClick = {},
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.extra.iconButtonBackground,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.search),
+                                    contentDescription = "Search",
+                                    modifier = Modifier.size(17.dp)
+                                )
+                            }
+
+                            IconButton(
+                                onClick = {},
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.extra.iconButtonBackground,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.shopping_bag),
+                                    contentDescription = "Cart",
+                                    modifier = Modifier.size(18.dp)
+                                )
                             }
                         }
                     }
-                )
-            }
-        ) { innerPadding ->
-            MainMenuContent(
-                innerPadding = innerPadding,
-                products = listOf(
-                    Product("T-Shirt Tomorrow", "$12.00", "4.8", R.drawable.one),
-                    Product("Hoodie STWD", "$15.00", "4.7", R.drawable.two)
-                )
+                }
             )
         }
-    }
-}
-
-@Composable
-fun MainMenuContent(innerPadding: PaddingValues, products: List<Product>) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(28.dp)
-    ) {
-        item(span = { GridItemSpan(maxLineSpan) }) { AddressCard() }
-        item(span = { GridItemSpan(maxLineSpan) }) { PromoBanner() }
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Text("Popular", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+    ) { innerPadding ->
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            contentPadding = PaddingValues(
+                horizontal = MaterialTheme.spacing.l,
+                vertical = MaterialTheme.spacing.s
+            ),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xl)
+        ) {
+            item(span = { GridItemSpan(maxLineSpan) }) { AddressCard("Astana, Kazakhstan") }
+            item(span = { GridItemSpan(maxLineSpan) }) { PromoBanner() }
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Text("Popular", style = MaterialTheme.typography.titleLarge)
+            }
+            items(products) { ProductCard(it) }
         }
-        items(products) { ProductCard(it) }
     }
 }
 
 @Composable
-fun AddressCard() {
+fun AddressCard(address: String, modifier: Modifier = Modifier) {
     Surface(
-        shape = RoundedCornerShape(50),
-        color = Color.White,
-        border = BorderStroke(1.dp, Color(232, 234, 235)),
-        modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.padding(6.dp),
@@ -150,34 +154,36 @@ fun AddressCard() {
                 contentDescription = "Location",
                 modifier = Modifier
                     .size(40.dp)
-                    .background(Color(232, 234, 235), CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape)
                     .padding(10.dp)
             )
-            Column(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
-                Text("Send to", fontSize = 12.sp, color = Color.Gray)
-                Text("Astana, Kazakhstan", fontWeight = FontWeight.Medium)
-            }
-            Button(
-                onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF1C1C1E),
-                    contentColor = Color.White
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = MaterialTheme.spacing.m)
+            ) {
+                Text(
+                    "Send to",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-            ) { Text("Change") }
+                Text(address, style = MaterialTheme.typography.bodyLarge)
+            }
+            Button(onClick = {}) { Text("Change") }
         }
     }
 }
 
 @Composable
-fun PromoBanner() {
+fun PromoBanner(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(180.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .clip(MaterialTheme.shapes.large)
             .background(
                 Brush.horizontalGradient(
-                    listOf(Color(0xFF111111), Color(0xFF4A4A4A))
+                    listOf(MaterialTheme.extra.bannerStart, MaterialTheme.extra.bannerEnd)
                 )
             )
     ) {
@@ -186,7 +192,7 @@ fun PromoBanner() {
                 .size(160.dp)
                 .align(Alignment.CenterEnd)
                 .offset(x = 40.dp)
-                .background(Color.White.copy(alpha = 0.08f), CircleShape)
+                .background(Paper.copy(alpha = 0.08f), CircleShape)
         )
 
         Box(
@@ -194,26 +200,30 @@ fun PromoBanner() {
                 .size(70.dp)
                 .align(Alignment.TopEnd)
                 .offset(x = (-30).dp, y = 20.dp)
-                .background(Color.White.copy(alpha = 0.15f), CircleShape)
+                .background(Paper.copy(alpha = 0.15f), CircleShape)
         )
 
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(MaterialTheme.spacing.l)
                 .align(Alignment.CenterStart),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s)
         ) {
-            Text("Don't miss out —", color = Color.White, fontWeight = FontWeight.Bold)
+            Text(
+                "Don't miss out —",
+                style = MaterialTheme.typography.titleMedium,
+                color = Paper
+            )
             Text(
                 "Save up to 50% on your\nfavorite products.",
-                color = Color.White,
-                fontSize = 14.sp
+                style = MaterialTheme.typography.bodyMedium,
+                color = Paper
             )
             Button(
                 onClick = {},
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
+                    containerColor = Paper,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 )
             ) { Text("Shop Now") }
         }
@@ -229,44 +239,41 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(2f / 3f)
+                .clip(MaterialTheme.shapes.extraSmall)
                 .background(
                     Brush.verticalGradient(
-                        listOf(Color(0xFFE4E4E6), Color(0xFFC9C9CC))
+                        listOf(MaterialTheme.extra.imageTop, MaterialTheme.extra.imageBottom)
                     )
                 ),
             contentScale = ContentScale.Crop
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(MaterialTheme.spacing.s))
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = MaterialTheme.spacing.s),
             verticalAlignment = Alignment.Top
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = product.name.uppercase(),
-                    fontSize = 12.sp,
-                    letterSpacing = 0.3.sp,
-                    fontWeight = FontWeight.Light,
-                    color = Color.Black,
+                    style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(MaterialTheme.spacing.xs))
                 Text(
                     text = product.price,
-                    fontSize = 12.sp,
-                    color = Color.Black
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
 
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add",
-                tint = Color.DarkGray,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(16.dp)
             )
         }
