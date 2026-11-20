@@ -11,5 +11,6 @@ object ProductRepository {
         Product(4, "Hoodie STWD", "$15.00",  R.drawable.two),
     )
 
+    fun getProducts(): List<Product> = products
     fun getProductById(id: Int): Product? = products.find { it.id == id }
 }

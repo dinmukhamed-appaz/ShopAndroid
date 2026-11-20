@@ -47,17 +47,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shopapp.R
 import com.example.shopapp.model.Product
+import com.example.shopapp.repository.ProductRepository
 import com.example.shopapp.ui.theme.Paper
 import com.example.shopapp.ui.theme.ShopAppTheme
 import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
 
-private val sampleProducts = listOf(
-    Product("T-Shirt Tomorrow", "$12.00", "4.8", R.drawable.one),
-    Product("Hoodie STWD", "$15.00", "4.7", R.drawable.two),
-    Product("T-Shirt Tomorrow", "$12.00", "4.8", R.drawable.one),
-    Product("Hoodie STWD", "$15.00", "4.7", R.drawable.two),
-)
+
 
 @Preview(showBackground = true)
 @Composable
@@ -67,7 +63,7 @@ private fun MainMenuScreenPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenuScreen(products: List<Product> = sampleProducts) {
+fun MainMenuScreen(products: List<Product> = ProductRepository.getProducts()) {
     Scaffold(
         topBar = {
             TopAppBar(
