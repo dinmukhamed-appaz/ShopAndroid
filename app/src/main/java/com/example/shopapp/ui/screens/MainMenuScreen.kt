@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,6 +37,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,17 +49,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.shopapp.R
 import com.example.shopapp.model.Product
+import com.example.shopapp.repository.ProductRepository
 import com.example.shopapp.ui.theme.Paper
 import com.example.shopapp.ui.theme.ShopAppTheme
 import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
-
-private val sampleProducts = listOf(
-    Product("T-Shirt Tomorrow", "$12.00", "4.8", R.drawable.one),
-    Product("Hoodie STWD", "$15.00", "4.7", R.drawable.two),
-    Product("T-Shirt Tomorrow", "$12.00", "4.8", R.drawable.one),
-    Product("Hoodie STWD", "$15.00", "4.7", R.drawable.two),
-)
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
@@ -67,7 +64,10 @@ private fun MainMenuScreenPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenuScreen(products: List<Product> = sampleProducts) {
+fun MainMenuScreen(products: List<Product> = ProductRepository.getProducts()) {
+    val gridState = rememberLazyGridState()
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -116,6 +116,7 @@ fun MainMenuScreen(products: List<Product> = sampleProducts) {
         }
     ) { innerPadding ->
         LazyVerticalGrid(
+            state = gridState,
             columns = GridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxSize()
@@ -128,7 +129,13 @@ fun MainMenuScreen(products: List<Product> = sampleProducts) {
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xl)
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) { AddressCard("Astana, Kazakhstan") }
-            item(span = { GridItemSpan(maxLineSpan) }) { PromoBanner() }
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                PromoBanner(
+                    onShopNowClick = {
+                        scope.launch { gridState.animateScrollToItem(2) }
+                    }
+                )
+            }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text("Popular", style = MaterialTheme.typography.titleLarge)
             }
@@ -175,7 +182,10 @@ fun AddressCard(address: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PromoBanner(modifier: Modifier = Modifier) {
+fun PromoBanner(
+    onShopNowClick: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -220,7 +230,7 @@ fun PromoBanner(modifier: Modifier = Modifier) {
                 color = Paper
             )
             Button(
-                onClick = {},
+                onClick = onShopNowClick,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Paper,
                     contentColor = MaterialTheme.colorScheme.onSurface
