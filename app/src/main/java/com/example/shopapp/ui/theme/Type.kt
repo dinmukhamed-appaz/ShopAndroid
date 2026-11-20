@@ -1,34 +1,30 @@
 package com.example.shopapp.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+val Typography = with(Typography()) {
+    copy(
+        titleLarge = titleLarge.copy(
+            fontFamily = Geist,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
+        ),
+        titleMedium = titleMedium.copy(fontFamily = Geist),
+        bodyLarge = bodyLarge.copy(fontFamily = Geist),
+        bodyMedium = bodyMedium.copy(fontFamily = Geist),
+        bodySmall = bodySmall.copy(
+            fontFamily = Geist,
+            fontSize = 12.sp
+        ),
+        labelLarge = labelLarge.copy(fontFamily = Geist),
+        labelMedium = labelMedium.copy(
+            fontFamily = Geist,
+            fontWeight = FontWeight.Light,
+            fontSize = 12.sp,
+            letterSpacing = 0.3.sp
+        ),
+        labelSmall = labelSmall.copy(fontFamily = Geist)
     )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
-)
+}
