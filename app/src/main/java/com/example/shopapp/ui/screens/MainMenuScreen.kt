@@ -102,6 +102,7 @@ fun MainMenuScreen() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             AddressCard()
+            PromoBanner()
 
         }
 
@@ -141,4 +142,57 @@ fun AddressCard() {
         }
     }
 }
+
+@Composable
+fun PromoBanner() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(180.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                Brush.horizontalGradient(
+                    listOf(Color(0xFF0B3A5B), Color(0xFF8FB3CC))
+                )
+            )
+    ) {
+        Box(
+            modifier = Modifier
+                .size(160.dp)
+                .align(Alignment.CenterEnd)
+                .offset(x = 40.dp)
+                .background(Color.White.copy(alpha = 0.15f), CircleShape)
+        )
+
+        Box(
+            modifier = Modifier
+                .size(70.dp)
+                .align(Alignment.TopEnd)
+                .offset(x = (-30).dp, y = 20.dp)
+                .background(Color.White.copy(alpha = 0.25f), CircleShape)
+        )
+
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.CenterStart),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("Don't miss out —", color = Color.White, fontWeight = FontWeight.Bold)
+            Text(
+                "Save up to 50% on your\nfavorite products.",
+                color = Color.White,
+                fontSize = 14.sp
+            )
+            Button(
+                onClick = {},
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                )
+            ) { Text("Shop Now") }
+        }
+    }
+}
+
 
