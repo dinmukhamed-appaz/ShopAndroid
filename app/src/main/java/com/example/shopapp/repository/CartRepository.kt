@@ -23,4 +23,18 @@ object CartRepository {
             }
         }
     }
+
+    fun increase(productId: Int) {
+        val newList = _items.value.toMutableList()
+        for (i in newList.indices) {
+            val item = newList[i]
+
+            if (item.product.id == productId) {
+                newList[i] = item.copy(quantity = item.quantity + 1)
+                break
+            }
+        }
+
+        _items.value = newList
+    }
 }
