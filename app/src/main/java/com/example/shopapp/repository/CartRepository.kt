@@ -55,4 +55,12 @@ object CartRepository {
 
         _items.value = newList
     }
+
+    fun remove(productId: Int) {
+        _items.update { list -> list.filterNot { it.product.id == productId } }
+    }
+
+    fun clear() {
+        _items.value = emptyList()
+    }
 }
