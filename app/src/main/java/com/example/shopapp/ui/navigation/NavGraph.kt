@@ -9,13 +9,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.shopapp.ui.screens.CartScreen
 import com.example.shopapp.ui.screens.MainMenuScreen
 import com.example.shopapp.ui.screens.ProductDetailsScreen
+import com.example.shopapp.ui.viewmodel.CartViewModel
 import com.example.shopapp.ui.viewmodel.ProductDetailsViewModel
+
 
 private object Routes {
     const val MAIN = "main"
     const val DETAILS = "product_details/{productId}"
+    const val CART = "cart"
 
     fun details(productId: Int) = "product_details/$productId"
 }
@@ -35,6 +39,15 @@ fun ShopNavigation() {
                         Routes.details(product.id)
                     )
                 }
+            )
+        }
+
+        composable(Routes.CART) {
+            val cartViewModel: CartViewModel = viewModel()
+
+            CartScreen(
+                viewModel = cartViewModel,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
