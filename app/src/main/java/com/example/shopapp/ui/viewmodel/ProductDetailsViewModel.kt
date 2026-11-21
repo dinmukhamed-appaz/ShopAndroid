@@ -5,6 +5,7 @@ import com.example.shopapp.model.Product
 import com.example.shopapp.repository.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import com.example.shopapp.repository.CartRepository
 
 data class ProductDetailsUiState(
     val isLoading: Boolean = true,
@@ -35,6 +36,14 @@ class ProductDetailsViewModel(
                 isLoading = false,
                 error = "Product not found"
             )
+        }
+    }
+
+    fun onAddToCart() {
+        val currentProduct = _uiState.value.product
+
+        if (currentProduct != null) {
+            CartRepository.add(currentProduct)
         }
     }
 }

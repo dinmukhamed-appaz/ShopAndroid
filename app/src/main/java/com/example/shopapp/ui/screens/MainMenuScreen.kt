@@ -56,6 +56,8 @@ import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 
 @Preview(showBackground = true)
 @Composable
@@ -67,7 +69,10 @@ private fun MainMenuScreenPreview() {
 @Composable
 fun MainMenuScreen(
     products: List<Product> = ProductRepository.getProducts(),
-    onProductClick: (Product) -> Unit = {}
+    onProductClick: (Product) -> Unit = {},
+    onAddToCart: (Product) -> Unit = {},
+    cartCount: Int = 0,
+    onCartClick: () -> Unit = {}
 ) {
     val gridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -101,17 +106,28 @@ fun MainMenuScreen(
                             }
 
                             IconButton(
-                                onClick = {},
+                                onClick = onCartClick,
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.extra.iconButtonBackground,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.shopping_bag),
-                                    contentDescription = "Cart",
-                                    modifier = Modifier.size(18.dp)
-                                )
+                                BadgedBox(
+                                    badge = {
+                                        if (cartCount > 0) {
+                                            Badge(
+                                                containerColor = MaterialTheme.colorScheme.primary,
+                                                contentColor = MaterialTheme.colorScheme.onPrimary
+                                            ) { Text(cartCount.toString()) }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.shopping_bag),
+                                        contentDescription = "Cart",
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -146,9 +162,8 @@ fun MainMenuScreen(
             items(products) { product ->
                 ProductCard(
                     product = product,
-                    onClick = {
-                        onProductClick(product)
-                    }
+                    onClick = { onProductClick(product) },
+                    onAddClick = { onAddToCart(product) }
                 )
             }
         }
@@ -255,7 +270,8 @@ fun PromoBanner(
 fun ProductCard(
     product: Product,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onAddClick: () -> Unit = {}
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Image(
@@ -296,12 +312,17 @@ fun ProductCard(
                 )
             }
 
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(16.dp)
-            )
+            IconButton(
+                onClick = onAddClick,
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add to cart",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
     }
 }
