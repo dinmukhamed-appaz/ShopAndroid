@@ -32,7 +32,7 @@ fun ProductDetailsScreen(
     Scaffold(
         containerColor = Color.White,
         bottomBar = {
-            AddToCartButton()
+            AddToCartButton(onClick = viewModel::onAddToCart)
         }
     ) { innerPadding ->
 
