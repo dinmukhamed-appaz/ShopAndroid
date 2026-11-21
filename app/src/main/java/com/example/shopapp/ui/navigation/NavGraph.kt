@@ -1,6 +1,8 @@
 package com.example.shopapp.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,7 +35,11 @@ fun ShopNavigation() {
         startDestination = Routes.MAIN
     ) {
         composable(Routes.MAIN) {
+            val cartViewModel: CartViewModel = viewModel()
+            val cartState by cartViewModel.uiState.collectAsState()
+
             MainMenuScreen(
+                cartCount = cartState.totalCount,
                 onProductClick = { product ->
                     navController.navigate(
                         Routes.details(product.id)

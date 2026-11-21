@@ -56,6 +56,8 @@ import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 
 @Preview(showBackground = true)
 @Composable
@@ -68,6 +70,7 @@ private fun MainMenuScreenPreview() {
 fun MainMenuScreen(
     products: List<Product> = ProductRepository.getProducts(),
     onProductClick: (Product) -> Unit = {},
+    cartCount: Int = 0,
     onCartClick: () -> Unit = {}
 ) {
     val gridState = rememberLazyGridState()
@@ -108,11 +111,22 @@ fun MainMenuScreen(
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.shopping_bag),
-                                    contentDescription = "Cart",
-                                    modifier = Modifier.size(18.dp)
-                                )
+                                BadgedBox(
+                                    badge = {
+                                        if (cartCount > 0) {
+                                            Badge(
+                                                containerColor = MaterialTheme.colorScheme.primary,
+                                                contentColor = MaterialTheme.colorScheme.onPrimary
+                                            ) { Text(cartCount.toString()) }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.shopping_bag),
+                                        contentDescription = "Cart",
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
                             }
                         }
                     }
