@@ -3,6 +3,7 @@ package com.example.shopapp.ui.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,12 +35,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,9 +63,6 @@ import com.example.shopapp.ui.theme.ShopAppTheme
 import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
 import kotlinx.coroutines.launch
-import androidx.compose.foundation.clickable
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 
 @Preview(showBackground = true)
 @Composable
@@ -77,6 +82,15 @@ fun MainMenuScreen(
     val gridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
 
+
+    var isSearching by remember { mutableStateOf(false) }
+
+
+    var query by remember { mutableStateOf("") }
+
+
+    val filteredProducts = products.filter { it.name.contains(query, ignoreCase = true) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -92,7 +106,10 @@ fun MainMenuScreen(
 
                         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             IconButton(
-                                onClick = {},
+                                onClick = {
+                                    isSearching = !isSearching
+                                    if (!isSearching) query = ""
+                                },
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.extra.iconButtonBackground,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -148,18 +165,37 @@ fun MainMenuScreen(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xl)
         ) {
-            item(span = { GridItemSpan(maxLineSpan) }) { AddressCard("Astana, Kazakhstan") }
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                PromoBanner(
-                    onShopNowClick = {
-                        scope.launch { gridState.animateScrollToItem(2) }
+            if (isSearching) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    OutlinedTextField(
+                        value = query,
+                        onValueChange = { query = it },
+                        placeholder = { Text("Search products") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                if (filteredProducts.isEmpty()) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text("Nothing found", style = MaterialTheme.typography.bodyLarge)
                     }
-                )
+                }
+            } else {
+                item(span = { GridItemSpan(maxLineSpan) }) { AddressCard("Astana, Kazakhstan") }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    PromoBanner(
+                        onShopNowClick = {
+                            scope.launch { gridState.animateScrollToItem(2) }
+                        }
+                    )
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text("Popular", style = MaterialTheme.typography.titleLarge)
+                }
             }
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Text("Popular", style = MaterialTheme.typography.titleLarge)
-            }
-            items(products) { product ->
+
+            items(filteredProducts) { product ->
                 ProductCard(
                     product = product,
                     onClick = { onProductClick(product) },
