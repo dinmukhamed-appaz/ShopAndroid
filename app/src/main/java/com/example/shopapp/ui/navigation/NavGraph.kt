@@ -45,7 +45,8 @@ fun ShopNavigation() {
                         Routes.details(product.id)
                     )
                 },
-                onCartClick = { navController.navigate(Routes.CART) }
+                onCartClick = { navController.navigate(Routes.CART) },
+                onAddToCart = cartViewModel::onAddToCart,
             )
         }
 

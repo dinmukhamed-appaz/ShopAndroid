@@ -3,6 +3,7 @@ package com.example.shopapp.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopapp.model.CartItem
+import com.example.shopapp.model.Product
 import com.example.shopapp.repository.CartRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,4 +41,6 @@ class CartViewModel : ViewModel() {
     fun onRemove(productId: Int) = CartRepository.remove(productId)
 
     fun onCheckout() = CartRepository.clear()
+
+    fun onAddToCart(product: Product) = CartRepository.add(product)
 }

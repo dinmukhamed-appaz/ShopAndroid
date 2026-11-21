@@ -70,6 +70,7 @@ private fun MainMenuScreenPreview() {
 fun MainMenuScreen(
     products: List<Product> = ProductRepository.getProducts(),
     onProductClick: (Product) -> Unit = {},
+    onAddToCart: (Product) -> Unit = {},
     cartCount: Int = 0,
     onCartClick: () -> Unit = {}
 ) {
@@ -161,9 +162,8 @@ fun MainMenuScreen(
             items(products) { product ->
                 ProductCard(
                     product = product,
-                    onClick = {
-                        onProductClick(product)
-                    }
+                    onClick = { onProductClick(product) },
+                    onAddClick = { onAddToCart(product) }
                 )
             }
         }
@@ -270,7 +270,8 @@ fun PromoBanner(
 fun ProductCard(
     product: Product,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onAddClick: () -> Unit = {}
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Image(
@@ -311,12 +312,17 @@ fun ProductCard(
                 )
             }
 
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(16.dp)
-            )
+            IconButton(
+                onClick = onAddClick,
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add to cart",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
     }
 }
