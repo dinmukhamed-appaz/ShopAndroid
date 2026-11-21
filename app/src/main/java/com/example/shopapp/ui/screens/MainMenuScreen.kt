@@ -67,7 +67,8 @@ private fun MainMenuScreenPreview() {
 @Composable
 fun MainMenuScreen(
     products: List<Product> = ProductRepository.getProducts(),
-    onProductClick: (Product) -> Unit = {}
+    onProductClick: (Product) -> Unit = {},
+    onCartClick: () -> Unit = {}
 ) {
     val gridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -101,7 +102,7 @@ fun MainMenuScreen(
                             }
 
                             IconButton(
-                                onClick = {},
+                                onClick = onCartClick,
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = MaterialTheme.extra.iconButtonBackground,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant

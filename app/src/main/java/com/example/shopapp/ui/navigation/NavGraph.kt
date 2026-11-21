@@ -38,7 +38,8 @@ fun ShopNavigation() {
                     navController.navigate(
                         Routes.details(product.id)
                     )
-                }
+                },
+                onCartClick = { navController.navigate(Routes.CART) }
             )
         }
 
