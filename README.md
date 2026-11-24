@@ -8,8 +8,8 @@ Users can browse products, open product details, and manage a shopping cart.
 | Name             | GitHub                                                     |
 |------------------|------------------------------------------------------------|
 | Dimukhamed Appaz | [@dinmukhamed-appaz](https://github.com/dinmukhamed-appaz) |
-| Nursultan Satbek | [@username](https://github.com/Nurssult)                   |
-| Erdos Kuanyshbek | [@username](https://github.com/Erdos06)                    |
+| Nursultan Satbek | [@Nurssult](https://github.com/Nurssult)                   |
+| Erdos Kuanyshbek | [@Erdos06](https://github.com/Erdos06)                    |
 
 ## Main Features
 
