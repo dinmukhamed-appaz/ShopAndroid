@@ -13,7 +13,7 @@ interface ShopApi {
 
 object RetrofitClient {
     val api: ShopApi = Retrofit.Builder()
-        .baseUrl("https://api.com/")
+        .baseUrl("https://fakestoreapi.com/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(ShopApi::class.java)
