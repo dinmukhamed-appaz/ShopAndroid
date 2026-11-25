@@ -14,10 +14,7 @@ object ProductRepository {
         val result = RetrofitClient.api.getProducts().map { it.toProduct() }
         cache = result
         return result
-        // Пример: API вернул 20 ProductDto -> получаем 20 Product и запоминаем в cache
     }
-
-    fun getProducts(): List<Product> = cache
 
     fun getProductById(id: Int): Product? = cache.find { it.id == id }
 }

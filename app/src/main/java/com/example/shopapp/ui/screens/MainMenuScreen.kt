@@ -29,6 +29,7 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -62,6 +63,7 @@ import com.example.shopapp.ui.theme.Paper
 import com.example.shopapp.ui.theme.ShopAppTheme
 import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
+import com.example.shopapp.ui.viewmodel.ProductsUiState
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
@@ -73,7 +75,8 @@ private fun MainMenuScreenPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainMenuScreen(
-    products: List<Product> = ProductRepository.getProducts(),
+    state: ProductsUiState = ProductsUiState.Loading,
+    onRetry: () -> Unit = {},
     onProductClick: (Product) -> Unit = {},
     onAddToCart: (Product) -> Unit = {},
     cartCount: Int = 0,
@@ -82,12 +85,10 @@ fun MainMenuScreen(
     val gridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
 
-
     var isSearching by remember { mutableStateOf(false) }
-
-
     var query by remember { mutableStateOf("") }
 
+    val products = (state as? ProductsUiState.Success)?.products ?: emptyList()
 
     val filteredProducts = products.filter { it.name.contains(query, ignoreCase = true) }
 
@@ -152,55 +153,85 @@ fun MainMenuScreen(
             )
         }
     ) { innerPadding ->
-        LazyVerticalGrid(
-            state = gridState,
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(
-                horizontal = MaterialTheme.spacing.l,
-                vertical = MaterialTheme.spacing.s
-            ),
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xl)
-        ) {
-            if (isSearching) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    OutlinedTextField(
-                        value = query,
-                        onValueChange = { query = it },
-                        placeholder = { Text("Search products") },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+        when (state) {
+            is ProductsUiState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+            }
 
-                if (filteredProducts.isEmpty()) {
-                    item(span = { GridItemSpan(maxLineSpan) }) {
-                        Text("Nothing found", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-            } else {
-                item(span = { GridItemSpan(maxLineSpan) }) { AddressCard("Astana, Kazakhstan") }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    PromoBanner(
-                        onShopNowClick = {
-                            scope.launch { gridState.animateScrollToItem(2) }
-                        }
-                    )
-                }
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text("Popular", style = MaterialTheme.typography.titleLarge)
+            is ProductsUiState.Error -> {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(state.message, style = MaterialTheme.typography.bodyLarge)
+                    Spacer(Modifier.height(MaterialTheme.spacing.m))
+                    Button(onClick = onRetry) { Text("Retry") }
                 }
             }
 
-            items(filteredProducts) { product ->
-                ProductCard(
-                    product = product,
-                    onClick = { onProductClick(product) },
-                    onAddClick = { onAddToCart(product) }
-                )
+            is ProductsUiState.Empty -> {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) { Text("No products available", style = MaterialTheme.typography.bodyLarge) }
+            }
+
+            is ProductsUiState.Success -> {
+                LazyVerticalGrid(
+                    state = gridState,
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentPadding = PaddingValues(
+                        horizontal = MaterialTheme.spacing.l,
+                        vertical = MaterialTheme.spacing.s
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.s),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.xl)
+                ) {
+                    if (isSearching) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            OutlinedTextField(
+                                value = query,
+                                onValueChange = { query = it },
+                                placeholder = { Text("Search products") },
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+
+                        if (filteredProducts.isEmpty()) {
+                            item(span = { GridItemSpan(maxLineSpan) }) {
+                                Text("Nothing found", style = MaterialTheme.typography.bodyLarge)
+                            }
+                        }
+                    } else {
+                        item(span = { GridItemSpan(maxLineSpan) }) { AddressCard("Astana, Kazakhstan") }
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            PromoBanner(
+                                onShopNowClick = {
+                                    scope.launch { gridState.animateScrollToItem(2) }
+                                }
+                            )
+                        }
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Text("Popular", style = MaterialTheme.typography.titleLarge)
+                        }
+                    }
+
+                    items(filteredProducts) { product ->
+                        ProductCard(
+                            product = product,
+                            onClick = { onProductClick(product) },
+                            onAddClick = { onAddToCart(product) }
+                        )
+                    }
+                }
             }
         }
     }
