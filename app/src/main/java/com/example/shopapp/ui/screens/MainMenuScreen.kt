@@ -1,7 +1,6 @@
 package com.example.shopapp.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -55,6 +54,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.shopapp.R
 import com.example.shopapp.model.Product
 import com.example.shopapp.repository.ProductRepository
@@ -310,8 +310,8 @@ fun ProductCard(
     onAddClick: () -> Unit = {}
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        Image(
-            painter = painterResource(id = product.imageRes),
+        AsyncImage(
+            model = product.imageUrl,
             contentDescription = product.name,
             modifier = Modifier
                 .fillMaxWidth()

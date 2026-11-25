@@ -1,6 +1,5 @@
 package com.example.shopapp.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.shopapp.model.CartItem
 import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
@@ -43,8 +43,8 @@ fun CartItemRow(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
     ) {
-        Image(
-            painter = painterResource(id = item.product.imageRes),
+        AsyncImage(
+            model = item.product.imageUrl,
             contentDescription = item.product.name,
             modifier = Modifier
                 .width(90.dp)
