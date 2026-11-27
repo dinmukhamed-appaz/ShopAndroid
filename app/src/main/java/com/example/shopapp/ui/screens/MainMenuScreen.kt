@@ -65,6 +65,8 @@ import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
 import com.example.shopapp.ui.viewmodel.ProductsUiState
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.graphics.Color
 
 @Preview(showBackground = true)
 @Composable
@@ -347,10 +349,27 @@ fun PromoBanner(
             Button(
                 onClick = onShopNowClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Paper,
-                    contentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = if (isSystemInDarkTheme()) {
+                        Color(0xFF333333)
+                    } else {
+                        Color.White
+                    },
+                    contentColor = if (isSystemInDarkTheme()) {
+                        Color.White
+                    } else {
+                        Color.Black
+                    }
                 )
-            ) { Text("Shop Now") }
+            ) {
+                Text(
+                    text = "Shop Now",
+                    color = if (isSystemInDarkTheme()) {
+                        Color.White
+                    } else {
+                        Color.Black
+                    }
+                )
+            }
         }
     }
 }
