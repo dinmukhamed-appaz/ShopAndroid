@@ -80,7 +80,8 @@ fun MainMenuScreen(
     onProductClick: (Product) -> Unit = {},
     onAddToCart: (Product) -> Unit = {},
     cartCount: Int = 0,
-    onCartClick: () -> Unit = {}
+    onCartClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {}
 ) {
     val gridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -105,7 +106,11 @@ fun MainMenuScreen(
                     ) {
                         Text("Wearify", style = MaterialTheme.typography.titleLarge)
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Search button
                             IconButton(
                                 onClick = {
                                     isSearching = !isSearching
@@ -123,6 +128,21 @@ fun MainMenuScreen(
                                 )
                             }
 
+                            // Settings button
+                            IconButton(
+                                onClick = onSettingsClick,
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.extra.iconButtonBackground,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Text(
+                                    text = "⚙",
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+
+                            // Cart button
                             IconButton(
                                 onClick = onCartClick,
                                 colors = IconButtonDefaults.iconButtonColors(
@@ -136,7 +156,9 @@ fun MainMenuScreen(
                                             Badge(
                                                 containerColor = MaterialTheme.colorScheme.primary,
                                                 contentColor = MaterialTheme.colorScheme.onPrimary
-                                            ) { Text(cartCount.toString()) }
+                                            ) {
+                                                Text(cartCount.toString())
+                                            }
                                         }
                                     }
                                 ) {
