@@ -25,6 +25,7 @@ import com.example.shopapp.ui.viewmodel.ProductsViewModel
 import com.example.shopapp.ui.viewmodel.SettingsViewModel
 import com.example.shopapp.ui.viewmodel.SettingsViewModelFactory
 
+
 private object Routes {
     const val MAIN = "main"
     const val DETAILS = "product_details/{productId}"
@@ -49,6 +50,18 @@ fun ShopNavigation() {
             val productsViewModel: ProductsViewModel = viewModel()
             val productsState by productsViewModel.uiState.collectAsState()
 
+            val context = LocalContext.current
+
+            val settingsRepository = remember {
+                SettingsRepository(context)
+            }
+
+            val settingsViewModel: SettingsViewModel = viewModel(
+                factory = SettingsViewModelFactory(settingsRepository)
+            )
+
+            val settings by settingsViewModel.settings.collectAsState()
+
             MainMenuScreen(
                 state = productsState,
                 onRetry = productsViewModel::loadProducts,
@@ -62,7 +75,8 @@ fun ShopNavigation() {
                 onSettingsClick = {
                     navController.navigate(Routes.SETTINGS)
                 },
-                onAddToCart = cartViewModel::onAddToCart
+                onAddToCart = cartViewModel::onAddToCart,
+                sortOrder = settings.sortOrder
             )
         }
 

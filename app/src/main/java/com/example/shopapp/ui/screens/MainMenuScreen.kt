@@ -67,6 +67,8 @@ import com.example.shopapp.ui.viewmodel.ProductsUiState
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.graphics.Color
+import com.example.shopapp.model.ProductSortOrder
+import androidx.compose.runtime.remember
 
 @Preview(showBackground = true)
 @Composable
@@ -83,7 +85,8 @@ fun MainMenuScreen(
     onAddToCart: (Product) -> Unit = {},
     cartCount: Int = 0,
     onCartClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {}
+    onSettingsClick: () -> Unit = {},
+    sortOrder: ProductSortOrder = ProductSortOrder.NAME
 ) {
     val gridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -93,7 +96,33 @@ fun MainMenuScreen(
 
     val products = (state as? ProductsUiState.Success)?.products ?: emptyList()
 
-    val filteredProducts = products.filter { it.name.contains(query, ignoreCase = true) }
+    val sortedProducts = remember(products, sortOrder) {
+        when (sortOrder) {
+            ProductSortOrder.NAME -> {
+                products.sortedBy { it.name.lowercase() }
+            }
+
+            ProductSortOrder.PRICE_ASCENDING -> {
+                products.sortedBy {
+                    it.price
+                        .replace(Regex("[^0-9.]"), "")
+                        .toDoubleOrNull() ?: 0.0
+                }
+            }
+
+            ProductSortOrder.PRICE_DESCENDING -> {
+                products.sortedByDescending {
+                    it.price
+                        .replace(Regex("[^0-9.]"), "")
+                        .toDoubleOrNull() ?: 0.0
+                }
+            }
+        }
+    }
+
+    val filteredProducts = sortedProducts.filter {
+        it.name.contains(query, ignoreCase = true)
+    }
 
     Scaffold(
         topBar = {
