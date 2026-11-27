@@ -16,6 +16,7 @@ import com.example.shopapp.ui.screens.MainMenuScreen
 import com.example.shopapp.ui.screens.ProductDetailsScreen
 import com.example.shopapp.ui.viewmodel.CartViewModel
 import com.example.shopapp.ui.viewmodel.ProductDetailsViewModel
+import com.example.shopapp.ui.viewmodel.ProductsViewModel
 
 
 private object Routes {
@@ -38,7 +39,12 @@ fun ShopNavigation() {
             val cartViewModel: CartViewModel = viewModel()
             val cartState by cartViewModel.uiState.collectAsState()
 
+            val productsViewModel: ProductsViewModel = viewModel()
+            val productsState by productsViewModel.uiState.collectAsState()
+
             MainMenuScreen(
+                state = productsState,
+                onRetry = productsViewModel::loadProducts,
                 cartCount = cartState.totalCount,
                 onProductClick = { product ->
                     navController.navigate(
