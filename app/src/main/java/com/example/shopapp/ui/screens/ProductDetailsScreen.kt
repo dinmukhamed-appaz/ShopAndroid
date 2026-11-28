@@ -1,3 +1,4 @@
+
 package com.example.shopapp.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,7 +16,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.shopapp.ui.components.AddToCartButton
 import com.example.shopapp.ui.components.BackToShopButton
@@ -30,9 +31,11 @@ fun ProductDetailsScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-        containerColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            AddToCartButton(onClick = viewModel::onAddToCart)
+            AddToCartButton(
+                onClick = viewModel::onAddToCart
+            )
         }
     ) { innerPadding ->
 
@@ -78,7 +81,8 @@ fun ProductDetailsScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = uiState.error ?: "Product not found"
+                        text = uiState.error ?: "Product not found",
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                 }
             }

@@ -65,6 +65,10 @@ import com.example.shopapp.ui.theme.extra
 import com.example.shopapp.ui.theme.spacing
 import com.example.shopapp.ui.viewmodel.ProductsUiState
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.graphics.Color
+import com.example.shopapp.model.ProductSortOrder
+import androidx.compose.runtime.remember
 
 @Preview(showBackground = true)
 @Composable
@@ -80,7 +84,9 @@ fun MainMenuScreen(
     onProductClick: (Product) -> Unit = {},
     onAddToCart: (Product) -> Unit = {},
     cartCount: Int = 0,
-    onCartClick: () -> Unit = {}
+    onCartClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {},
+    sortOrder: ProductSortOrder = ProductSortOrder.NAME
 ) {
     val gridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -90,7 +96,33 @@ fun MainMenuScreen(
 
     val products = (state as? ProductsUiState.Success)?.products ?: emptyList()
 
-    val filteredProducts = products.filter { it.name.contains(query, ignoreCase = true) }
+    val sortedProducts = remember(products, sortOrder) {
+        when (sortOrder) {
+            ProductSortOrder.NAME -> {
+                products.sortedBy { it.name.lowercase() }
+            }
+
+            ProductSortOrder.PRICE_ASCENDING -> {
+                products.sortedBy {
+                    it.price
+                        .replace(Regex("[^0-9.]"), "")
+                        .toDoubleOrNull() ?: 0.0
+                }
+            }
+
+            ProductSortOrder.PRICE_DESCENDING -> {
+                products.sortedByDescending {
+                    it.price
+                        .replace(Regex("[^0-9.]"), "")
+                        .toDoubleOrNull() ?: 0.0
+                }
+            }
+        }
+    }
+
+    val filteredProducts = sortedProducts.filter {
+        it.name.contains(query, ignoreCase = true)
+    }
 
     Scaffold(
         topBar = {
@@ -105,7 +137,11 @@ fun MainMenuScreen(
                     ) {
                         Text("Wearify", style = MaterialTheme.typography.titleLarge)
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Search button
                             IconButton(
                                 onClick = {
                                     isSearching = !isSearching
@@ -123,6 +159,21 @@ fun MainMenuScreen(
                                 )
                             }
 
+                            // Settings button
+                            IconButton(
+                                onClick = onSettingsClick,
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.extra.iconButtonBackground,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            ) {
+                                Text(
+                                    text = "⚙",
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            }
+
+                            // Cart button
                             IconButton(
                                 onClick = onCartClick,
                                 colors = IconButtonDefaults.iconButtonColors(
@@ -136,7 +187,9 @@ fun MainMenuScreen(
                                             Badge(
                                                 containerColor = MaterialTheme.colorScheme.primary,
                                                 contentColor = MaterialTheme.colorScheme.onPrimary
-                                            ) { Text(cartCount.toString()) }
+                                            ) {
+                                                Text(cartCount.toString())
+                                            }
                                         }
                                     }
                                 ) {
@@ -325,10 +378,27 @@ fun PromoBanner(
             Button(
                 onClick = onShopNowClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Paper,
-                    contentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = if (isSystemInDarkTheme()) {
+                        Color(0xFF333333)
+                    } else {
+                        Color.White
+                    },
+                    contentColor = if (isSystemInDarkTheme()) {
+                        Color.White
+                    } else {
+                        Color.Black
+                    }
                 )
-            ) { Text("Shop Now") }
+            ) {
+                Text(
+                    text = "Shop Now",
+                    color = if (isSystemInDarkTheme()) {
+                        Color.White
+                    } else {
+                        Color.Black
+                    }
+                )
+            }
         }
     }
 }
