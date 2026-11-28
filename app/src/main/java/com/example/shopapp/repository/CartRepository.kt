@@ -42,4 +42,8 @@ object CartRepository {
             dao.deleteById(productId)
         }
     }
+
+    suspend fun remove(productId: Int) = dao.deleteById(productId)
+
+    suspend fun clear() = dao.clear()
 }
