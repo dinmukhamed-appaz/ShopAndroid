@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 data class CartUiState(
     val items: List<CartItem> = emptyList(),
@@ -34,13 +36,23 @@ class CartViewModel : ViewModel() {
             initialValue = CartUiState()
         )
 
-    fun onIncrease(productId: Int) = CartRepository.increase(productId)
+    fun onIncrease(productId: Int) {
+        viewModelScope.launch { CartRepository.increase(productId) }
+    }
 
-    fun onDecrease(productId: Int) = CartRepository.decrease(productId)
+    fun onDecrease(productId: Int) {
+        viewModelScope.launch { CartRepository.decrease(productId) }
+    }
 
-    fun onRemove(productId: Int) = CartRepository.remove(productId)
+    fun onRemove(productId: Int) {
+        viewModelScope.launch { CartRepository.remove(productId) }
+    }
 
-    fun onCheckout() = CartRepository.clear()
+    fun onCheckout() {
+        viewModelScope.launch { CartRepository.clear() }
+    }
 
-    fun onAddToCart(product: Product) = CartRepository.add(product)
+    fun onAddToCart(product: Product) {
+        viewModelScope.launch { CartRepository.add(product) }
+    }
 }
