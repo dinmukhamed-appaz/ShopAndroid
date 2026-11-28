@@ -1,66 +1,49 @@
 package com.example.shopapp.repository
 
+import com.example.shopapp.database.AppDatabase
+import com.example.shopapp.database.CartDao
+import com.example.shopapp.database.toCartItem
+import com.example.shopapp.database.toEntity
 import com.example.shopapp.model.CartItem
 import com.example.shopapp.model.Product
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 object CartRepository {
 
-    private val _items = MutableStateFlow<List<CartItem>>(emptyList())
-    val items: StateFlow<List<CartItem>> = _items.asStateFlow()
+    private lateinit var dao: CartDao
 
-    fun add(product: Product) {
-        _items.update { list ->
-            if (list.any { it.product.id == product.id }) {
-                list.map {
-                    if (it.product.id == product.id) it.copy(quantity = it.quantity + 1) else it
-                }
-            } else {
-                list + CartItem(product)
-            }
+    fun init(database: AppDatabase) {
+        dao = database.cartDao()
+    }
+
+    val items: Flow<List<CartItem>>
+        get() = dao.getAll().map { list -> list.map { it.toCartItem() } }
+
+    suspend fun add(product: Product) {
+        val existing = dao.getById(product.id)
+        if (existing != null) {
+            dao.update(existing.copy(quantity = existing.quantity + 1))
+        } else {
+            dao.insert(product.toEntity())
         }
     }
 
-    fun increase(productId: Int) {
-        val newList = _items.value.toMutableList()
-        for (i in newList.indices) {
-            val item = newList[i]
+    suspend fun increase(productId: Int) {
+        val item = dao.getById(productId) ?: return
+        dao.update(item.copy(quantity = item.quantity + 1))
+    }
 
-            if (item.product.id == productId) {
-                newList[i] = item.copy(quantity = item.quantity + 1)
-                break
-            }
+    suspend fun decrease(productId: Int) {
+        val item = dao.getById(productId) ?: return
+        if (item.quantity > 1) {
+            dao.update(item.copy(quantity = item.quantity - 1))
+        } else {
+            dao.deleteById(productId)
         }
-
-        _items.value = newList
     }
 
-    fun decrease(productId: Int) {
-        val newList = _items.value.toMutableList()
-        for (i in newList.indices) {
-            val item = newList[i]
+    suspend fun remove(productId: Int) = dao.deleteById(productId)
 
-            if (item.product.id == productId) {
-                if (item.quantity > 1) {
-                    newList[i] = item.copy(quantity = item.quantity - 1)
-                } else {
-                    newList.removeAt(i)
-                }
-                break
-            }
-        }
-
-        _items.value = newList
-    }
-
-    fun remove(productId: Int) {
-        _items.update { list -> list.filterNot { it.product.id == productId } }
-    }
-
-    fun clear() {
-        _items.value = emptyList()
-    }
+    suspend fun clear() = dao.clear()
 }
