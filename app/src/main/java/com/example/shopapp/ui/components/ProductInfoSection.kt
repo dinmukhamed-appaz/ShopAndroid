@@ -1,3 +1,4 @@
+
 package com.example.shopapp.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +12,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.shopapp.model.Product
@@ -31,13 +31,15 @@ fun ProductInfoSection(product: Product) {
                 text = product.name,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
 
             Text(
                 text = product.price,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
 
@@ -46,7 +48,7 @@ fun ProductInfoSection(product: Product) {
         Text(
             text = product.description,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.DarkGray
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -54,7 +56,8 @@ fun ProductInfoSection(product: Product) {
         Text(
             text = "Product details",
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -62,7 +65,7 @@ fun ProductInfoSection(product: Product) {
         Text(
             text = "• Premium quality material\n• Comfortable fit\n• Modern casual design",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.DarkGray
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

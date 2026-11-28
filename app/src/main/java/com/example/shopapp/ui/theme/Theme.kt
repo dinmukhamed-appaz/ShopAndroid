@@ -11,6 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
     primary = Graphite,
@@ -66,7 +67,13 @@ fun ShopAppTheme(
     }
 
     CompositionLocalProvider(
-        LocalExtraColors provides ExtraColors(),
+        LocalExtraColors provides ExtraColors(
+            iconButtonBackground = if (darkTheme) {
+                Color(0xFF333333)
+            } else {
+                Mist
+            }
+        ),
         LocalSpacing provides Spacing()
     ) {
         MaterialTheme(
