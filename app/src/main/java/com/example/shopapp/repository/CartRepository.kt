@@ -28,4 +28,18 @@ object CartRepository {
             dao.insert(product.toEntity())
         }
     }
+
+    suspend fun increase(productId: Int) {
+        val item = dao.getById(productId) ?: return
+        dao.update(item.copy(quantity = item.quantity + 1))
+    }
+
+    suspend fun decrease(productId: Int) {
+        val item = dao.getById(productId) ?: return
+        if (item.quantity > 1) {
+            dao.update(item.copy(quantity = item.quantity - 1))
+        } else {
+            dao.deleteById(productId)
+        }
+    }
 }
